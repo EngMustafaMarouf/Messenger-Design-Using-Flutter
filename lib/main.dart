@@ -20,7 +20,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.blue,
       ),
-      darkTheme: ThemeData(primaryColor: Colors.black),
+      darkTheme: ThemeData(
+          appBarTheme: AppBarTheme(
+        backgroundColor: Colors.black,
+      )),
       home: MyHomePage(),
     );
   }
@@ -34,12 +37,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    List<Account> accountList = context
-        .read<MyProvider>()
-        .acountList;
-    List<Account> messageList = context
-        .read<MyProvider>()
-        .messageList;
+    List<Account> accountList = context.read<MyProvider>().acountList;
+    List<Account> messageList = context.read<MyProvider>().messageList;
 
     //print(Status.OnLine);
 
@@ -47,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(55),
         child: AppBar(
-          backgroundColor: Colors.black,
+          //backgroundColor: Colors.transparent,
           title: Text(
             "الدردشات",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
@@ -94,10 +93,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          color: Colors.black,
-        ),
+      backgroundColor: Colors.black,
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
         child: Column(
           children: [
             //search
@@ -106,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Container(
                 height: 35,
                 decoration: BoxDecoration(
-                  color: Colors.white30,
+                  color: Colors.white10,
                   borderRadius: BorderRadius.circular(50),
                 ),
                 child: Row(
@@ -116,14 +114,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       onPressed: () {},
                       icon: Icon(
                         Icons.search,
-                        color: Colors.white30,
+                        color: Colors.white10,
                         size: 25,
                       ),
                     ),
                     Text(
                       "بحث",
                       style: TextStyle(
-                          color: Colors.white30,
+                          color: Colors.white10,
                           fontSize: 20,
                           fontWeight: FontWeight.bold),
                     ),
@@ -136,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        color: Colors.white30,
+                        color: Colors.white12,
                         onPressed: () {},
                         child: Text(
                           "رساله SMS",
@@ -153,114 +151,139 @@ class _MyHomePageState extends State<MyHomePage> {
             Container(
               height: 120,
               //color: Colors.orange,
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.white30,
-                          radius: 30.0,
-                          child: IconButton(onPressed: () {},
-                            icon: Icon(
-                              Icons.video_call_sharp, color: Colors.white,
-                              size: 35,),),
-                        ),
-                        Text("انشاء مكالمه\nفيديو", style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            height: 1.3), textAlign: TextAlign.center,),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: accountList.length,
-                      itemBuilder: (ctx, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            height: 60,
-                            width: 65,
-                            child: Column(
-                              children: [
-                                Stack(
-                                  alignment:AlignmentDirectional.bottomEnd,
-                                  children: [
-                                    CircleAvatar(
-                                      backgroundImage:
-                                      AssetImage(accountList[index].imageUrl),
-                                      radius: 29.0,
-                                    ),
-                                    if(accountList[index].status.toString() == "Status.OnLine")
-                                      Positioned(
-
-                                          child: CircleAvatar(backgroundColor:Colors.green,radius: 6.0,
-
-
-                                          )),
-                                  ],
-                                ),
-                                Text(
-                                  accountList[index].name,
-                                  style: TextStyle(color: Colors.white),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-
-                              ],
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.white10,
+                            radius: 30.0,
+                            child: IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.video_call_sharp,
+                                color: Colors.white,
+                                size: 35,
+                              ),
                             ),
                           ),
-                        );
-                      },
+                          Text(
+                            "انشاء مكالمة\nفيديو",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                height: 1.3),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                        ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          itemCount: accountList.length,
+                          itemBuilder: (ctx, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                height: 60,
+                                width: 65,
+                                child: Column(
+                                  children: [
+                                    Stack(
+                                      alignment: AlignmentDirectional.bottomEnd,
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage: AssetImage(
+                                              accountList[index].imageUrl),
+                                          radius: 29.0,
+                                        ),
+                                        if (accountList[index].status.toString() ==
+                                            "Status.OnLine")
+                                          Positioned(
+                                              child: CircleAvatar(
+                                            backgroundColor: Colors.green,
+                                            radius: 6.0,
+                                          )),
+                                      ],
+                                    ),
+                                    Text(
+                                      accountList[index].name,
+                                      style: TextStyle(color: Colors.white),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+
+
+                  ],
+                ),
               ),
             ),
             //messages
-            Expanded(
-              child: ListView.builder(
+            ListView.builder(
+              shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 itemCount: messageList.length,
-                itemBuilder:(ctx,index){
+                itemBuilder: (ctx, index) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: [
                         Stack(
-                         alignment:AlignmentDirectional.bottomEnd,
+                          alignment: AlignmentDirectional.bottomEnd,
                           children: [
                             CircleAvatar(
-                              backgroundImage: AssetImage(messageList[index].imageUrl),
+                              backgroundImage:
+                                  AssetImage(messageList[index].imageUrl),
                               radius: 28.0,
                             ),
-                            if(messageList[index].status.toString() == "Status.OnLine")
-                            Positioned(
-
-                                child: CircleAvatar(backgroundColor:Colors.green,radius: 6.0,
-
-
-                                )),
+                            if (messageList[index].status.toString() ==
+                                "Status.OnLine")
+                              Positioned(
+                                  child: CircleAvatar(
+                                backgroundColor: Colors.green,
+                                radius: 6.0,
+                              )),
                           ],
                         ),
-                        SizedBox(width: 20,),
+                        SizedBox(
+                          width: 20,
+                        ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(messageList[index].name,style: TextStyle(color: Colors.white,fontSize: 20),),
-                            Text(messageList[index].mesage+" ."+messageList[index].time,style: TextStyle(color: Colors.grey,fontSize: 13,),),
+                            Text(
+                              messageList[index].name,
+                              style: TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                            Text(
+                              messageList[index].mesage +
+                                  " ." +
+                                  messageList[index].time,
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 13,
+                              ),
+                            ),
                           ],
                         ),
                       ],
                     ),
                   );
-                },),
-            ),
-
-
+                },
+              ),
           ],
         ),
       ),
